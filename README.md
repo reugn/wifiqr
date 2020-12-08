@@ -1,5 +1,10 @@
 # Wi-Fi QR Code generator
 <img src="docs/images/qr.png" align='right'/>
+
+[![Test Status](https://github.com/reugn/wifiqr/workflows/Test/badge.svg)](https://github.com/reugn/wifiqr/actions?query=workflow%3ATest)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/reugn/wifiqr?tab=doc)](https://pkg.go.dev/github.com/reugn/wifiqr?tab=doc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/reugn/wifiqr)](https://goreportcard.com/report/github.com/reugn/wifiqr)
+
 Create a QR code with your Wi-Fi login details.
 
 Use Google Lens or other application to scan it and connect automatically.
