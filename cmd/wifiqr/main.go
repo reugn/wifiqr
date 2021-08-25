@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strconv"
 
 	"github.com/reugn/wifiqr"
 )
 
-const version = "0.1.0"
+const version = "0.2.0"
 
 var (
 	versionParam = flag.Bool("version", false, "Show version.")
@@ -18,7 +17,7 @@ var (
 	ssidParam   = flag.String("ssid", "", "The name of the wireless network. You'll be prompted to enter the SSID if not set.")
 	keyParam    = flag.String("key", "", "A pre-shared key (PSK). You'll be prompted to enter the key if not set.")
 	encParam    = flag.String("enc", "WPA2", "The wireless network encryption protocol (WEP, WPA, WPA2).")
-	hiddenParam = flag.String("hidden", "false", "Hidden SSID true/false.")
+	hiddenParam = flag.Bool("hidden", false, "Hidden SSID.")
 
 	fileNameParam = flag.String("file", "", "A png file to write the QR Code (prints to stdout if not set).")
 	sizeParam     = flag.Int("size", 256, "Size is both the image width and height in pixels.")
@@ -34,7 +33,7 @@ func main() {
 
 	validateArguments()
 
-	config := wifiqr.NewConfig(*ssidParam, *keyParam, *encParam, validateAndGetHidden())
+	config := wifiqr.NewConfig(*ssidParam, *keyParam, *encParam, *hiddenParam)
 	q, err := wifiqr.InitCode(config)
 	if err != nil {
 		fmt.Println(err)
@@ -60,15 +59,6 @@ func validateAndGetFileName() string {
 		return *fileNameParam + ".png"
 	}
 	return *fileNameParam
-}
-
-func validateAndGetHidden() bool {
-	hidden, err := strconv.ParseBool(*hiddenParam)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	return hidden
 }
 
 func validateArguments() {
