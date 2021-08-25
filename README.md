@@ -10,6 +10,9 @@ Create a QR code with your Wi-Fi login details.
 Use Google Lens or other application to scan it and connect automatically.
 
 ## Installation
+Pick a binary from the [releases](https://github.com/reugn/wifiqr/releases).
+
+### Build from source 
 Download and install Go https://golang.org/doc/install.
 
 Clone the repository:  
@@ -30,8 +33,8 @@ Usage of ./wifiqr:
         The wireless network encryption protocol (WEP, WPA, WPA2). (default "WPA2")
   -file string
         A png file to write the QR Code (prints to stdout if not set).
-  -hidden string
-        Hidden SSID true/false. (default "false")
+  -hidden
+        Hidden SSID.
   -key string
         A pre-shared key (PSK). You'll be prompted to enter the key if not set.
   -size int
