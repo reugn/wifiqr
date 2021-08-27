@@ -1,15 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/reugn/wifiqr"
 )
 
-const version = "0.2.0"
+const version = "0.2.1"
 
 var (
 	versionParam = flag.Bool("version", false, "Show version.")
@@ -36,7 +38,7 @@ func main() {
 	config := wifiqr.NewConfig(*ssidParam, *keyParam, *encParam, *hiddenParam)
 	q, err := wifiqr.InitCode(config)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		return
 	}
 
@@ -46,12 +48,11 @@ func main() {
 		fileName := validateAndGetFileName()
 		err := q.WriteFile(*sizeParam, fileName)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		} else {
 			fmt.Println("QR Code was successfully saved to " + fileName + ".")
 		}
 	}
-
 }
 
 func validateAndGetFileName() string {
@@ -64,14 +65,26 @@ func validateAndGetFileName() string {
 func validateArguments() {
 	if *ssidParam == "" {
 		fmt.Println("Enter the name of the wireless network (SSID):")
-		fmt.Scan(ssidParam)
+		*ssidParam = readLine()
 	}
 	if *keyParam == "" {
 		fmt.Println("Enter the network key (password):")
-		fmt.Scan(keyParam)
+		*keyParam = readLine()
 	}
 	if *ssidParam == "" || *keyParam == "" {
 		flag.Usage()
 		os.Exit(1)
 	}
+}
+
+func readLine() string {
+	reader := bufio.NewReader(os.Stdin)
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+	// convert CRLF to LF
+	line = strings.Replace(line, "\n", "", -1)
+	return line
 }
