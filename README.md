@@ -15,16 +15,12 @@ Pick a binary from the [releases](https://github.com/reugn/wifiqr/releases).
 ### Build from source 
 Download and install Go https://golang.org/doc/install.
 
-Clone the repository:  
+Get the package:
 ```sh
-git clone https://github.com/reugn/wifiqr.git
+go get github.com/reugn/wifiqr
 ```
 
-Build:  
-```sh
-cd wifiqr
-go build ./cmd/wifiqr
-```
+Read this [guide](https://golang.org/doc/tutorial/compile-install) on how to compile and install the application.
 
 ## Usage
 ```text
