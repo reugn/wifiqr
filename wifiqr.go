@@ -2,7 +2,6 @@ package wifiqr
 
 import (
 	"strconv"
-	"strings"
 
 	"github.com/skip2/go-qrcode"
 )
@@ -14,14 +13,7 @@ var defaultRecoveryLevel qrcode.RecoveryLevel = qrcode.High
 
 // InitCode returns the qrcode.QRCode based on the configuration.
 func InitCode(config *Config) (*qrcode.QRCode, error) {
-	schema := buildSchema(config)
-
-	q, err := qrcode.New(schema, defaultRecoveryLevel)
-	if err != nil {
-		return nil, err
-	}
-
-	return q, nil
+	return qrcode.New(buildSchema(config), defaultRecoveryLevel)
 }
 
 // WIFI:S:My_SSID;T:WPA;P:key goes here;H:false;
@@ -32,15 +24,13 @@ func InitCode(config *Config) (*qrcode.QRCode, error) {
 // |    +-- ESSID
 // +-- code type
 func buildSchema(config *Config) string {
-	var sb strings.Builder
-	sb.WriteString("WIFI:S:")
-	sb.WriteString(config.SSID)
-	sb.WriteString(";T:")
-	sb.WriteString(config.Encryption)
-	sb.WriteString(";P:")
-	sb.WriteString(config.Key)
-	sb.WriteString(";H:")
-	sb.WriteString(strconv.FormatBool(config.Hidden))
-	sb.WriteString(";")
-	return sb.String()
+	return "WIFI:S:" +
+		config.SSID +
+		";T:" +
+		config.Encryption +
+		";P:" +
+		config.Key +
+		";H:" +
+		strconv.FormatBool(config.Hidden) +
+		";"
 }
