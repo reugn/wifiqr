@@ -11,7 +11,7 @@ import (
 	"github.com/reugn/wifiqr"
 )
 
-const version = "0.2.1"
+var version string = "develop"
 
 var (
 	versionParam = flag.Bool("version", false, "Show version.")
