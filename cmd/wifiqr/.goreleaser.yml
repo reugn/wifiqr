@@ -1,6 +1,6 @@
 project_name: wifiqr
 builds:
-  - main: ./cmd/wifiqr
+  - main: .
     ldflags:
       - -s -w -X main.version={{.Version}}
     env: [CGO_ENABLED=0]
