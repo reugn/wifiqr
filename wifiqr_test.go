@@ -9,7 +9,7 @@ import (
 )
 
 func TestCode(t *testing.T) {
-	config := wifiqr.NewConfig("ssid1", "1234", "WPA2", false)
+	config := wifiqr.NewConfig("ssid1", "1234", wifiqr.WPA2, false)
 	qrCode, err := wifiqr.InitCode(config)
 	if err != nil {
 		t.Fatal(err)

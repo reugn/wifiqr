@@ -27,7 +27,7 @@ func buildSchema(config *Config) string {
 	return "WIFI:S:" +
 		config.SSID +
 		";T:" +
-		config.Encryption +
+		config.Encryption.String() +
 		";P:" +
 		config.Key +
 		";H:" +
