@@ -1,6 +1,9 @@
 project_name: wifiqr
 builds:
-  - env: [CGO_ENABLED=0]
+  - main: ./cmd/wifiqr
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    env: [CGO_ENABLED=0]
     goos:
       - linux
       - windows
@@ -8,6 +11,7 @@ builds:
     goarch:
       - amd64
       - arm64
+      - 386
 archives:
   - replacements:
       darwin: macos
