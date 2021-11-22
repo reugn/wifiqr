@@ -1,4 +1,5 @@
-# Wi-Fi QR Code generator
+# Wi-Fi QR Code Generator
+
 <img src="docs/images/qr.png" align='right'/>
 
 [![Test Status](https://github.com/reugn/wifiqr/workflows/Test/badge.svg)](https://github.com/reugn/wifiqr/actions?query=workflow%3ATest)
@@ -10,12 +11,15 @@ Create a QR code with your Wi-Fi login details.
 Use Google Lens or other application to scan it and connect automatically.
 
 ## Installation
-Pick a binary from the [releases](https://github.com/reugn/wifiqr/releases).
 
-### Build from source 
+Choose a binary from the [releases](https://github.com/reugn/wifiqr/releases).
+
+### Build from Source
+
 Download and install Go https://golang.org/doc/install.
 
 Get the package:
+
 ```sh
 go get github.com/reugn/wifiqr
 ```
@@ -23,10 +27,11 @@ go get github.com/reugn/wifiqr
 Read this [guide](https://golang.org/doc/tutorial/compile-install) on how to compile and install the application.
 
 ## Usage
+
 ```text
 Usage of ./wifiqr:
   -enc string
-        The wireless network encryption protocol (WEP, WPA, WPA2). (default "WPA2")
+        The wireless network encryption protocol (WPA2, WPA, WEP). (default "WPA2")
   -file string
         A png file to write the QR Code (prints to stdout if not set).
   -hidden
@@ -41,10 +46,12 @@ Usage of ./wifiqr:
         Show version.
 ```
 
-## Usage example
+## Usage Example
+
 ```sh
 ./wifiqr -ssid some_ssid -key 1234 -file qr.png -size 128
 ```
 
 ## License
+
 MIT
