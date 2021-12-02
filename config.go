@@ -11,10 +11,17 @@ const (
 	WPA2 EncryptionProtocol = iota
 	WPA
 	WEP
+	NONE
 
 	wpa2Str = "WPA2"
 	wpaStr  = "WPA"
 	wepStr  = "WEP"
+	noneStr = "NONE"
+
+	wpa2Code = wpa2Str
+	wpaCode  = wpaStr
+	wepCode  = wepStr
+	noneCode = "nopass"
 )
 
 func (ep EncryptionProtocol) String() string {
@@ -25,6 +32,22 @@ func (ep EncryptionProtocol) String() string {
 		return wpaStr
 	case WEP:
 		return wepStr
+	case NONE:
+		return noneStr
+	}
+	return ""
+}
+
+func (ep EncryptionProtocol) Code() string {
+	switch ep {
+	case WPA2:
+		return wpa2Code
+	case WPA:
+		return wpaCode
+	case WEP:
+		return wepCode
+	case NONE:
+		return noneCode
 	}
 	return ""
 }
@@ -37,6 +60,8 @@ func NewEncryptionProtocol(t string) (EncryptionProtocol, error) {
 		return WPA, nil
 	case wepStr:
 		return WEP, nil
+	case noneStr, noneCode, "":
+		return NONE, nil
 	}
 	return WPA2, errors.New("no such protocol")
 }
