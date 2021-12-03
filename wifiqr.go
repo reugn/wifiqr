@@ -2,6 +2,7 @@ package wifiqr
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/skip2/go-qrcode"
 )
@@ -17,19 +18,14 @@ func InitCode(config *Config) (*qrcode.QRCode, error) {
 }
 
 // escapeString escapes the special characters with a backslash.
-func escapeString(in string) string {
+func escapeString(s string) string {
 	// https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11
-	out := ""
-	for _, c := range in {
-		switch c {
-		case '\\', ';', ',', '"', ':':
-			out += `\` + string(c)
-		default:
-			out += string(c)
-		}
+
+	for _, c := range []byte{'\\', ';', ',', '"', ':'} {
+		s = strings.Replace(s, string(c), `\`+string(c), -1)
 	}
 
-	return out
+	return s
 }
 
 // WIFI:S:My_SSID;T:WPA;P:key goes here;H:false;
