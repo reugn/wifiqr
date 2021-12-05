@@ -117,35 +117,29 @@ func validateKey(key string) (string, error) {
 // validateEncryption gets the encryption protocol from the user
 // if the provided protocol is empty or not valid.
 func validateEncryption(protocol string) (wifiqr.EncryptionProtocol, error) {
-	if protocol != "" {
-		encProtocol, err := wifiqr.NewEncryptionProtocol(protocol)
-		if err != nil {
-			fmt.Println("Invalid encryption protocol.")
-		} else {
-			return encProtocol, nil
-		}
+	encProtocol, err := wifiqr.NewEncryptionProtocol(protocol)
+	if err != nil {
+		fmt.Println("Invalid encryption protocol.")
+	} else {
+		return encProtocol, nil
 	}
 
 	prompt := promptui.Select{
-		Label: "Select the encryption type",
+		Label: "Select the encryption protocol type",
 		Items: []string{
 			wifiqr.WPA2.String(),
 			wifiqr.WPA.String(),
 			wifiqr.WEP.String(),
+			wifiqr.NONE.String(),
 		},
 	}
 
 	_, enc, err := prompt.Run()
 
-	encProtocol, err := wifiqr.NewEncryptionProtocol(enc)
-	if err != nil {
-		return encProtocol, err
-	}
-
-	return encProtocol, err
+	return wifiqr.NewEncryptionProtocol(enc)
 }
 
-// run is tne primary function for the program.
+// run is the primary function for the program.
 func run() int {
 	var (
 		versionParam = flag.Bool("version", false, "Show version.")
@@ -154,7 +148,12 @@ func run() int {
 		keyParam  = flag.String("key", "", "A pre-shared key (PSK). You'll be prompted to enter the key if not set.")
 		encParam  = flag.String("enc", wifiqr.WPA2.String(),
 			"The wireless network encryption protocol ("+
-				strings.Join([]string{wifiqr.WPA2.String(), wifiqr.WPA.String(), wifiqr.WEP.String()}, ", ")+
+				strings.Join([]string{
+					wifiqr.WPA2.String(),
+					wifiqr.WPA.String(),
+					wifiqr.WEP.String(),
+					wifiqr.NONE.String(),
+				}, ", ")+
 				").")
 		hiddenParam = flag.Bool("hidden", false, "Hidden SSID.")
 
@@ -181,9 +180,11 @@ func run() int {
 		return 1
 	}
 
-	*keyParam, err = validateKey(*keyParam)
-	if err != nil {
-		return 1
+	if protocol != wifiqr.NONE {
+		*keyParam, err = validateKey(*keyParam)
+		if err != nil {
+			return 1
+		}
 	}
 
 	q, err := generateCode(*ssidParam, *keyParam, protocol, *hiddenParam)

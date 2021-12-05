@@ -31,7 +31,7 @@ Read this [guide](https://golang.org/doc/tutorial/compile-install) on how to com
 ```text
 Usage of ./wifiqr:
   -enc string
-        The wireless network encryption protocol (WPA2, WPA, WEP). (default "WPA2")
+        The wireless network encryption protocol (WPA2, WPA, WEP, NONE). (default "WPA2")
   -file string
         A png file to write the QR Code (prints to stdout if not set).
   -hidden
