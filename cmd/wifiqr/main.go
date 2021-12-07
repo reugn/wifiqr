@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,6 +10,7 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/reugn/wifiqr"
 	"github.com/skip2/go-qrcode"
+	"github.com/spf13/cobra"
 )
 
 const (
@@ -33,6 +33,18 @@ func generateCode(ssid, key string, encoding wifiqr.EncryptionProtocol, hidden b
 	return q, err
 }
 
+// validateAndGetFilename adds the .png extension to the
+// filename if it doesn't already have one.
+func validateAndGetFilename(filename string) string {
+	const pngExt = ".png"
+
+	if filepath.Ext(filename) != pngExt {
+		filename = filename + pngExt
+	}
+
+	return filename
+}
+
 // saveCode saves the QR code to a file.
 func saveCode(q *qrcode.QRCode, filename string, size int) error {
 	if err := q.WriteFile(size, validateAndGetFilename(filename)); err != nil {
@@ -53,18 +65,6 @@ func outputCode(q *qrcode.QRCode, filename string, size int) error {
 	}
 
 	return saveCode(q, filename, size)
-}
-
-// validateAndGetFilename adds the .png extension to the
-// filename if it doesn't already have one.
-func validateAndGetFilename(filename string) string {
-	const pngExt = ".png"
-
-	if filepath.Ext(filename) != pngExt {
-		filename = filename + pngExt
-	}
-
-	return filename
 }
 
 // getInput gets user input using promptui.
@@ -139,64 +139,92 @@ func validateEncryption(protocol string) (wifiqr.EncryptionProtocol, error) {
 	return wifiqr.NewEncryptionProtocol(enc)
 }
 
-// run is the primary function for the program.
-func run() int {
-	var (
-		versionParam = flag.Bool("version", false, "Show version.")
+// process generates the QR code given the parameters and can be
+// considered to be a layer below that of the CLI.
+func process(ssid, protocolIn, output string, pixels int, key string, keySet bool) int {
+	var err error = nil
 
-		ssidParam = flag.String("ssid", "", "The name of the wireless network. You'll be prompted to enter the SSID if not set.")
-		keyParam  = flag.String("key", "", "A pre-shared key (PSK). You'll be prompted to enter the key if not set.")
-		encParam  = flag.String("enc", wifiqr.WPA2.String(),
-			"The wireless network encryption protocol ("+
-				strings.Join([]string{
-					wifiqr.WPA2.String(),
-					wifiqr.WPA.String(),
-					wifiqr.WEP.String(),
-					wifiqr.NONE.String(),
-				}, ", ")+
-				").")
-		hiddenParam = flag.Bool("hidden", false, "Hidden SSID.")
-
-		fileNameParam = flag.String("file", "", "A png file to write the QR Code (prints to stdout if not set).")
-		sizeParam     = flag.Int("size", 256, "Size is both the image width and height in pixels.")
-
-		err error
-	)
-
-	flag.Parse()
-
-	if *versionParam {
-		fmt.Println("Version:", version)
-		return 0
-	}
-
-	*ssidParam, err = validateSSID(*ssidParam)
+	ssid, err = validateSSID(ssid)
 	if err != nil {
 		return 1
 	}
 
-	protocol, err := validateEncryption(*encParam)
+	protocol, err := validateEncryption(protocolIn)
 	if err != nil {
 		return 1
 	}
 
-	if protocol != wifiqr.NONE {
-		*keyParam, err = validateKey(*keyParam)
+	if protocol != wifiqr.NONE && !keySet {
+		key, err = validateKey(key)
 		if err != nil {
 			return 1
 		}
 	}
 
-	q, err := generateCode(*ssidParam, *keyParam, protocol, *hiddenParam)
+	q, err := generateCode(ssid, key, protocol, false)
 	if err != nil {
 		return 1
 	}
 
-	if outputCode(q, *fileNameParam, *sizeParam) != nil {
+	if outputCode(q, output, pixels) != nil {
 		return 1
 	}
 
 	return 0
+}
+
+// run processes the CLI arguments using Cobra then passes control
+// to the process function, using the CLI options as function
+// parameters.
+func run() int {
+	const optionKey = "key"
+	var (
+		ssid, key, protocolIn, output string
+		pixels, exitVal               int
+		hidden, keySet                bool
+	)
+
+	rootCmd := &cobra.Command{
+		Use:   "wifiqr",
+		Short: "wifiqr is a WiFi QR code generator",
+		Long: `wifiqr is a WiFi QR code generator
+
+It is used to create a QR code containing the login details such as
+the name, password, and encryption type. This Android and iOS
+compatible QR code can be scanned using Google Lens or other QR code
+reader to connect to the network.
+
+If the options necessary for creating the QR code are not given on
+the command line, the user will be prompted for the information.`,
+		Version: version,
+	}
+
+	rootCmd.Run = func(cmd *cobra.Command, args []string) {
+		keySet = rootCmd.Flags().Changed(optionKey)
+
+		exitVal = process(ssid, protocolIn, output, pixels, key, keySet)
+	}
+
+	rootCmd.Flags().StringVarP(&ssid, "ssid", "i", "", "Wireless network name")
+	rootCmd.Flags().StringVarP(&key, optionKey, "k", "", "Wireless password (pre-shared key / PSK)")
+	rootCmd.Flags().StringVarP(&protocolIn, "protocol", "p", wifiqr.WPA2.String(), "Wireless network encryption protocol ("+
+		strings.Join([]string{
+			wifiqr.WPA2.String(),
+			wifiqr.WPA.String(),
+			wifiqr.WEP.String(),
+			wifiqr.NONE.String(),
+		}, ", ")+
+		").")
+	rootCmd.Flags().BoolVarP(&hidden, "hidden", "", false, "Hidden SSID")
+	rootCmd.Flags().StringVarP(&output, "output", "o", "", "PNG file for output (default stdout)")
+	rootCmd.Flags().IntVarP(&pixels, "size", "s", 256, "Image width and height in pixels")
+
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		exitVal = 1
+	}
+
+	return exitVal
 }
 
 func main() {
