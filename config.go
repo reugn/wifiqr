@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// EncryptionProtocol represents a WiFi encryption protocol.
 type EncryptionProtocol int
 
 const (
@@ -24,6 +25,7 @@ const (
 	noneCode = "nopass"
 )
 
+// String returns the string representation of the EncryptionProtocol.
 func (ep EncryptionProtocol) String() string {
 	switch ep {
 	case WPA2:
@@ -38,6 +40,7 @@ func (ep EncryptionProtocol) String() string {
 	return ""
 }
 
+// Code returns a string code for the EncryptionProtocol.
 func (ep EncryptionProtocol) Code() string {
 	switch ep {
 	case WPA2:
@@ -52,6 +55,7 @@ func (ep EncryptionProtocol) Code() string {
 	return ""
 }
 
+// NewEncryptionProtocol returns a new EncryptionProtocol from the specified string.
 func NewEncryptionProtocol(t string) (EncryptionProtocol, error) {
 	switch strings.ToUpper(t) {
 	case wpa2Str:
