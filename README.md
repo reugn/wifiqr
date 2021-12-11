@@ -3,8 +3,9 @@
 <img src="docs/images/qr.png" align='right'/>
 
 [![Test Status](https://github.com/reugn/wifiqr/workflows/Test/badge.svg)](https://github.com/reugn/wifiqr/actions?query=workflow%3ATest)
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/reugn/wifiqr?tab=doc)](https://pkg.go.dev/github.com/reugn/wifiqr?tab=doc)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/reugn/wifiqr)](https://pkg.go.dev/github.com/reugn/wifiqr)
 [![Go Report Card](https://goreportcard.com/badge/github.com/reugn/wifiqr)](https://goreportcard.com/report/github.com/reugn/wifiqr)
+[![codecov](https://codecov.io/gh/reugn/wifiqr/branch/main/graph/badge.svg)](https://codecov.io/gh/reugn/wifiqr)
 
 Create a QR code with your Wi-Fi login details.
 
