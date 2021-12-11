@@ -2,3 +2,4 @@
 .idea/
 /wifiqr
 dist/
+coverage.out
