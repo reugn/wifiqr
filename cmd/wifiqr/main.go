@@ -141,7 +141,7 @@ func validateEncryption(protocol string) (wifiqr.EncryptionProtocol, error) {
 
 // process generates the QR code given the parameters and can be
 // considered to be a layer below that of the CLI.
-func process(ssid, protocolIn, output string, pixels int, key string, keySet bool) int {
+func process(ssid, protocolIn, output string, pixels int, key string, keySet bool, hidden bool) int {
 	var err error = nil
 
 	ssid, err = validateSSID(ssid)
@@ -161,7 +161,7 @@ func process(ssid, protocolIn, output string, pixels int, key string, keySet boo
 		}
 	}
 
-	q, err := generateCode(ssid, key, protocol, false)
+	q, err := generateCode(ssid, key, protocol, hidden)
 	if err != nil {
 		return 1
 	}
@@ -202,7 +202,7 @@ the command line, the user will be prompted for the information.`,
 	rootCmd.Run = func(cmd *cobra.Command, args []string) {
 		keySet = rootCmd.Flags().Changed(optionKey)
 
-		exitVal = process(ssid, protocolIn, output, pixels, key, keySet)
+		exitVal = process(ssid, protocolIn, output, pixels, key, keySet, hidden)
 	}
 
 	rootCmd.Flags().StringVarP(&ssid, "ssid", "i", "", "Wireless network name")
