@@ -18,7 +18,7 @@ const (
 	pskDesc  = "network key (password)"
 )
 
-var version string = "develop"
+var version = "develop"
 
 // generateCode creates a WiFi QR code.
 func generateCode(ssid, key string, encoding wifiqr.EncryptionProtocol, hidden bool) (*qrcode.QRCode, error) {
@@ -39,7 +39,7 @@ func validateAndGetFilename(filename string) string {
 	const pngExt = ".png"
 
 	if filepath.Ext(filename) != pngExt {
-		filename = filename + pngExt
+		filename += pngExt
 	}
 
 	return filename
@@ -77,7 +77,7 @@ func getInput(prompt string, validate func(string) error) (string, error) {
 
 // inputValidator is a generic function for getting user input if the value is empty.
 func inputValidator(value, prompt string, validate func(string) error) (string, error) {
-	var err error = nil
+	var err error
 
 	if value == "" {
 		value, err = getInput(prompt, validate)
@@ -134,7 +134,7 @@ func validateEncryption(protocol string) (wifiqr.EncryptionProtocol, error) {
 		},
 	}
 
-	_, enc, err := prompt.Run()
+	_, enc, _ := prompt.Run()
 
 	return wifiqr.NewEncryptionProtocol(enc)
 }
@@ -142,7 +142,7 @@ func validateEncryption(protocol string) (wifiqr.EncryptionProtocol, error) {
 // process generates the QR code given the parameters and can be
 // considered to be a layer below that of the CLI.
 func process(ssid, protocolIn, output string, pixels int, key string, keySet bool, hidden bool) int {
-	var err error = nil
+	var err error
 
 	ssid, err = validateSSID(ssid)
 	if err != nil {
@@ -207,14 +207,15 @@ the command line, the user will be prompted for the information.`,
 
 	rootCmd.Flags().StringVarP(&ssid, "ssid", "i", "", "Wireless network name")
 	rootCmd.Flags().StringVarP(&key, optionKey, "k", "", "Wireless password (pre-shared key / PSK)")
-	rootCmd.Flags().StringVarP(&protocolIn, "protocol", "p", wifiqr.WPA2.String(), "Wireless network encryption protocol ("+
-		strings.Join([]string{
-			wifiqr.WPA2.String(),
-			wifiqr.WPA.String(),
-			wifiqr.WEP.String(),
-			wifiqr.NONE.String(),
-		}, ", ")+
-		").")
+	rootCmd.Flags().StringVarP(&protocolIn, "protocol", "p", wifiqr.WPA2.String(),
+		"Wireless network encryption protocol ("+
+			strings.Join([]string{
+				wifiqr.WPA2.String(),
+				wifiqr.WPA.String(),
+				wifiqr.WEP.String(),
+				wifiqr.NONE.String(),
+			}, ", ")+
+			").")
 	rootCmd.Flags().BoolVarP(&hidden, "hidden", "", false, "Hidden SSID")
 	rootCmd.Flags().StringVarP(&output, "output", "o", "", "PNG file for output (default stdout)")
 	rootCmd.Flags().IntVarP(&pixels, "size", "s", 256, "Image width and height in pixels")

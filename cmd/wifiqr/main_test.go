@@ -51,7 +51,8 @@ func Test_generateCode(t *testing.T) {
 				encoding: wifiqr.WPA2,
 				hidden:   false,
 			},
-			want:    [32]byte{117, 113, 240, 31, 70, 131, 178, 237, 61, 56, 190, 135, 145, 86, 173, 81, 244, 78, 103, 173, 103, 188, 82, 70, 79, 180, 149, 217, 5, 113, 227, 25},
+			want: [32]byte{117, 113, 240, 31, 70, 131, 178, 237, 61, 56, 190, 135, 145, 86, 173, 81,
+				244, 78, 103, 173, 103, 188, 82, 70, 79, 180, 149, 217, 5, 113, 227, 25},
 			wantErr: false,
 		},
 		{
@@ -79,7 +80,8 @@ func Test_generateCode(t *testing.T) {
 				} else {
 					hash := sha256.Sum256(data)
 					if tt.want != hash {
-						t.Errorf("generateCode() png data does not match wanted hash, got: %v, want %v", byteString(hash), byteString(tt.want))
+						t.Errorf("generateCode() png data does not match wanted hash, got: %v, want %v",
+							byteString(hash), byteString(tt.want))
 					}
 				}
 			}
