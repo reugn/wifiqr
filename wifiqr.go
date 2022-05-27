@@ -22,7 +22,7 @@ func escapeString(s string) string {
 	// https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11
 
 	for _, c := range []byte{'\\', ';', ',', '"', ':'} {
-		s = strings.Replace(s, string(c), `\`+string(c), -1)
+		s = strings.ReplaceAll(s, string(c), `\`+string(c))
 	}
 
 	return s
