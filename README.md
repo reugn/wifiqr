@@ -19,13 +19,13 @@ Choose a binary from the [releases](https://github.com/reugn/wifiqr/releases).
 
 Download and [install Go](https://golang.org/doc/install).
 
-Get the package:
+Install the application:
 
 ```sh
-go get github.com/reugn/wifiqr
+go install github.com/reugn/wifiqr/cmd/wifiqr@latest
 ```
 
-Read this [guide](https://golang.org/doc/tutorial/compile-install) on how to compile and install the application.
+See the [go install](https://go.dev/ref/mod#go-install) instructions for more information about the command.
 
 ## Usage
 
