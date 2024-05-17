@@ -1,21 +1,27 @@
 name: Test Coverage
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [1.19]
+        go-version: [1.22]
     steps:
     - name: Setup Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ matrix.go-version }}
 
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Run coverage
       run: go test . -coverprofile=coverage.out -covermode=atomic
