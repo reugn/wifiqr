@@ -199,7 +199,7 @@ the command line, the user will be prompted for the information.`,
 		Version: version,
 	}
 
-	rootCmd.Run = func(cmd *cobra.Command, args []string) {
+	rootCmd.Run = func(_ *cobra.Command, _ []string) {
 		keySet = rootCmd.Flags().Changed(optionKey)
 
 		exitVal = process(ssid, protocolIn, output, pixels, key, keySet, hidden)

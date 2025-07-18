@@ -22,6 +22,7 @@ func byteString(b [32]byte) string {
 	return s + " }"
 }
 
+//nolint:gosec
 func Test_generateCode(t *testing.T) {
 	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
