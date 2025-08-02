@@ -1,9 +1,13 @@
+version: 2
+
 project_name: wifiqr
+
 builds:
   - main: .
     ldflags:
-      - -s -w -X main.version={{.Version}}
-    env: [CGO_ENABLED=0]
+      - -s -w -X main.version={{ .Version }}
+    env:
+      - CGO_ENABLED=0
     goos:
       - linux
       - windows
@@ -11,7 +15,7 @@ builds:
     goarch:
       - amd64
       - arm64
-      - 386
+
 archives:
   - name_template: >-
       {{ .ProjectName }}_{{ .Version }}_
@@ -21,4 +25,14 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [ 'zip' ]
+
+changelog:
+  filters:
+    exclude:
+      - "^Merge pull request"
+
+checksum:
+  name_template: "{{ .ArtifactName }}.sha256"
+  split: true
+  algorithm: sha256
